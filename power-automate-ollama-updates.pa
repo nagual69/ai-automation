@@ -1,0 +1,20 @@
+''' Power Automate Script
+@@copilotGeneratedAction: 'False'
+Scripting.RunPowershellScript.RunPowershellScript Script: $'''mkdir c:\\ollama_logs
+
+# Run the ollama command and redirect output to a temporary file
+ollama list > c:\\ollama_logs\\temp.txt
+
+# Remove the header line
+Get-Content c:\\ollama_logs\\temp.txt | Select-Object -Skip 1 | ForEach-Object { $_.Split()[0] } > c:\\ollama_logs\\ollama_list_filtered.txt
+
+# Delete the temporary file
+Remove-Item c:\\ollama_logs\\temp.txt''' ScriptOutput=> PowershellOutput
+File.ReadTextFromFile.ReadTextAsList File: $'''c:\\ollama_logs\\ollama_list_filtered.txt''' Encoding: File.TextFileEncoding.DefaultEncoding Contents=> FileContents
+LOOP FOREACH CurrentItem IN FileContents
+ @@copilotGeneratedAction: 'False'
+Scripting.RunDOSCommand.RunDOSCommand DOSCommandOrApplication: $'''ollama pull %CurrentItem%''' WorkingDirectory: $'''c:\\ollama_logs''' StandardOutput=> CommandOutput StandardError=> CommandErrorOutput ExitCode=> CommandExitCode
+ File.WriteText File: $'''C:\\ollama_logs\\ollama_update_log.txt''' TextToWrite: $'''%CommandOutput.Trimmed%
+---------------------------------------
+%CommandErrorOutput.Trimmed%''' AppendNewLine: True IfFileExists: File.IfFileExists.Append Encoding: File.FileEncoding.DefaultEncoding
+END
