@@ -1,0 +1,118 @@
+[
+    {
+        "id": "cd02b07642ed5272",
+        "type": "tab",
+        "label": "Ollama Model Updater",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "ea14bd70409949a0",
+        "type": "ollama-list",
+        "z": "cd02b07642ed5272",
+        "name": "Ollama List",
+        "x": 550,
+        "y": 720,
+        "wires": [
+            [
+                "5059e72ee3ffdb0d"
+            ]
+        ]
+    },
+    {
+        "id": "5059e72ee3ffdb0d",
+        "type": "json",
+        "z": "cd02b07642ed5272",
+        "name": "Convert Output to Object",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 590,
+        "y": 820,
+        "wires": [
+            [
+                "3b7176e868a4df02"
+            ]
+        ]
+    },
+    {
+        "id": "73f42757c3363747",
+        "type": "inject",
+        "z": "cd02b07642ed5272",
+        "name": "Inject Ollama Host",
+        "props": [
+            {
+                "p": "payload.host",
+                "v": "127.0.0.1",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 12 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 410,
+        "y": 620,
+        "wires": [
+            [
+                "ea14bd70409949a0"
+            ]
+        ]
+    },
+    {
+        "id": "3b7176e868a4df02",
+        "type": "function",
+        "z": "cd02b07642ed5272",
+        "name": "Iterate Over Ollama Models",
+        "func": "for (var i = 0; i < msg.payload.models.length; i++) {\n    var newMsg = {};\n    newMsg.payload = {\n        host: msg.payload.host,\n        model: msg.payload.models[i].model,\n    }\n    node.send(newMsg);\n}\nreturn null;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 900,
+        "wires": [
+            [
+                "683105761824d4e1"
+            ]
+        ]
+    },
+    {
+        "id": "683105761824d4e1",
+        "type": "ollama-pull",
+        "z": "cd02b07642ed5272",
+        "name": "Ollama-Pull",
+        "x": 550,
+        "y": 980,
+        "wires": [
+            [
+                "8a8a2408d262a59b"
+            ]
+        ]
+    },
+    {
+        "id": "8a8a2408d262a59b",
+        "type": "file",
+        "z": "cd02b07642ed5272",
+        "name": "Logging to ollama-updates.log",
+        "filename": "ollama-updates.log",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 630,
+        "y": 1080,
+        "wires": [
+            []
+        ]
+    }
+]
