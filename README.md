@@ -14,6 +14,11 @@ Here's a Power Automate script designed to automatically manage the process.
 ### Node-RED Ollama Model Updater
 A Node-RED flow to update Ollama models. Import `NodeRed-Ollama-Model-Updater.json` into your Node-RED instance.
 
+### Install Hugging Face Model to Ollama
+Scripts to download a GGUF model from Hugging Face and register it with Ollama.
+- Windows: `install-hf-model-to-ollama.ps1`
+- Linux: `install-hf-model-to-ollama.sh`
+
 ## Docker Utilities
 Located in `docker_utilities/`
 
